@@ -1,59 +1,44 @@
-import { timeStamp } from "console";
 import mongoose from "mongoose";
 
-const FicheSchema=new mongoose.Schema({
-    title:{
-        type:String,
-        required:true
+const FicheSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    classification: {
+      domain: {
+        type: String,
+        enum: [
+          "mathematics", "physics", "chemistry", "biology",
+          "history", "geography", "literature", "philosophy",
+          "computer_science", "economics", "law", "medicine",
+          "psychology", "sociology", "art", "music", "other"
+        ],
+        lowercase: true,
+        trim: true
+      },
+      difficulty: { type: String, enum: ["easy","medium","hard"], default: "medium" },
+      topics: { type: [String], default: [] },
+      estimatedStudyTime: Number
     },
-    content:{
-        type:String,
-        required:true
-    },
-      author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-    classification:{
-        domain:{
-            type:String,
-        enum:[
-        'mathematics', 'physics', 'chemistry', 'biology',
-        'history', 'geography', 'literature', 'philosophy',
-        'computer_science', 'economics', 'law', 'medicine',
-        'psychology', 'sociology', 'art', 'music', 'other'
-      ]
-        },
-        difficulty:{
-            type:String,
-            enum:['easy', 'medium', 'hard'],
-            default:"medium"
-        },
-          topics: [String], // Tags/mots-clés extraits par IA
-    estimatedStudyTime: Number // en minutes
-  },
     qualityScore: {
-    score: {
-      type: Number,
-      min: 0,
-      max: 100
-    },
-    criteria: {
-      clarity: Number,      // Clarté du contenu
-      coherence: Number,    // Cohérence logique
-      completeness: Number, // Complétude
-      structure: Number     // Structure/organisation
-    },
-    feedback: String // Suggestions d'amélioration
+      score: { type: Number, min: 0, max: 100 },
+      criteria: {
+        clarity: { type: Number, default: 0 },
+        coherence: { type: Number, default: 0 },
+        completeness: { type: Number, default: 0 },
+        structure: { type: Number, default: 0 }
+      },
+      feedback: String
+    }
   },
-timeStamps:true});
+  { timestamps: true }
+);
 
-// Index pour améliorer les performances de recherche
-    FicheSchema.index({ 'classification.domain': 1, 'classification.difficulty': 1 });
-    FicheSchema.index({ author: 1, createdAt: -1 });
-    FicheSchema.index({ 'classification.topics': 1 });
+// Indexes for search performance
+FicheSchema.index({ "classification.domain": 1, "classification.difficulty": 1 });
+FicheSchema.index({ author: 1, createdAt: -1 });
+FicheSchema.index({ "classification.topics": 1 });
 
-
-const ficheModel=mongoose.model("Fiche",FicheSchema);
-export default ficheModel;
+const Fiche = mongoose.model("Fiche", FicheSchema);
+export default Fiche;
