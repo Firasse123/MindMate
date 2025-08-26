@@ -10,13 +10,27 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      trim: true,        // good practice
-      lowercase: true,   // good practice
+      trim: true,
+      lowercase: true,
     },
     password: {
       type: String,
       required: true,
     },
+    lastLogin: {
+      type: Date,
+      default: Date.now,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    resetPasswordToken: String,
+    resetPasswordExpiresAt: Date,
+    verificationToken: String,
+    verificationTokenExpiresAt: Date,
+
+    // Nested objects should be inside the main schema object
     profile: {
       firstName: String,
       lastName: String,
@@ -41,7 +55,7 @@ const UserSchema = new mongoose.Schema(
       lastStudyDate: { type: Date },
     },
   },
-  { timestamps: true } // ✅ correct placement
+  { timestamps: true }
 );
 
 const User = mongoose.model("User", UserSchema);
