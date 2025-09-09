@@ -1,10 +1,5 @@
 import mongoose from "mongoose";
 const questionSchema = new mongoose.Schema({
-  type: {
-    type: String,
-    enum: ['multiple_choice', 'true_false', 'short_answer', 'essay'],
-    required: true
-  },
   question: {
     type: String,
     required: true
@@ -30,6 +25,11 @@ const quizSchema = new mongoose.Schema({
     ref: 'Fiche',
     required: true
   },
+   user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   questions: [questionSchema],
   
   // Configuration du quiz
@@ -42,16 +42,9 @@ const quizSchema = new mongoose.Schema({
   },
 
   // Métadonnées de génération IA
-  generationMetadata: {
-    model: String, // GPT-4, etc.
-    prompt: String,
-    generatedAt: Date,
-    difficulty: String,
-    focusAreas: [String]
-  }
 }, {
   timestamps: true
 });
 
-const quizModel = mongoose.model('Quiz', quizSchema);
-export default quizModel;
+const Quiz = mongoose.model('Quiz', quizSchema);
+export default Quiz;

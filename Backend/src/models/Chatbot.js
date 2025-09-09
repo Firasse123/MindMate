@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import User from "./User.js";
-
+    
 const ChatbotSchema=new mongoose.Schema({
     userId:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true},
     role:{

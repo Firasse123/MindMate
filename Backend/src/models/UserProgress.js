@@ -46,7 +46,7 @@ const userProgressSchema = new mongoose.Schema({
     earnedAt: Date,
     category: {
       type: String,
-      enum: ['study_time', 'streak', 'score', 'completion', 'exploration']
+      enum: ['study_time', 'streak', 'score', 'completion', 'exploration',"level"]
     }
   }],
 

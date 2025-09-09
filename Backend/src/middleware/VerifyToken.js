@@ -1,17 +1,26 @@
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const verifyToken = (req, res, next) => {
-	const token = req.cookies.token;
-	if (!token) return res.status(401).json({ success: false, message: "Unauthorized - no token provided" });
-	try {
-		const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  // Get token from Authorization header: "Bearer <token>"
+  const authHeader = req.headers.authorization;
 
-		if (!decoded) return res.status(401).json({ success: false, message: "Unauthorized - invalid token" });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ success: false, message: "Unauthorized - no token provided" });
+  }
 
-		req.userId = decoded.userId;
-		next();
-	} catch (error) {
-		console.log("Error in verifyToken ", error);
-		return res.status(500).json({ success: false, message: "Server error" });
-	}
+  const token = authHeader.split(" ")[1]; // extract the token
+
+  try {
+	
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+console.log("Decoded token:", decoded);
+
+    req.userId = decoded.userId; // attach userId to request
+    next();
+  } catch (error) {
+    console.log("Error in verifyToken", error);
+    return res.status(401).json({ success: false, message: "Unauthorized - invalid or expired token" });
+  }
 };

@@ -17,16 +17,14 @@ const studySessionSchema = new mongoose.Schema({
   fiche: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Fiche",
-    required: true
   },
   quiz: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Quiz",
-    required: true
   },
   sessionType: {
     type: String,
-    enum: ["study", "quiz", "review", "ai_chat"],
+    enum:  ["study", "quiz", "review", "ai_chat", "sheet_generation", "quiz_generation"],
     required: true
   },
   answers: { type: [answerSchema], default: [] },

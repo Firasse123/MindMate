@@ -2,14 +2,14 @@ import mongoose from "mongoose";
 
 const FicheSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true },
+    title: { type: String , required: true },
     content: { type: String, required: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     classification: {
       domain: {
         type: String,
         enum: [
-          "mathematics", "physics", "chemistry", "biology",
+          "mathematics","math", "physics", "chemistry", "biology",
           "history", "geography", "literature", "philosophy",
           "computer_science", "economics", "law", "medicine",
           "psychology", "sociology", "art", "music", "other"
@@ -30,8 +30,11 @@ const FicheSchema = new mongoose.Schema(
         structure: { type: Number, default: 0 }
       },
       feedback: String
-    }
+    },
+
+
   },
+
   { timestamps: true }
 );
 
