@@ -391,18 +391,24 @@ const Dashboard = () => {
         }
         
         // Process recent activity
-        if (sessionsResponse) {
-          const formattedActivity = sessionsResponse.slice(0, 10).map(session => ({
-            id: session._id,
-            type: getActivityType(session.sessionType),
-            title: getActivityTitle(session),
-            score: session.results?.score,
-            xpEarned: calculateXPEarned(session),
-            timestamp: formatTimestamp(session.completedAt || session.createdAt),
-            difficulty: session.results?.difficulty || 'medium'
-          }));
-          setRecentActivity(formattedActivity);
-        }
+      // Process recent activity
+if (sessionsResponse) {
+  // Remove duplicates based on session ID
+  const uniqueSessions = sessionsResponse.filter((session, index, self) => 
+    index === self.findIndex(s => s._id === session._id)
+  );
+  
+  const formattedActivity = uniqueSessions.slice(0, 10).map(session => ({
+    id: session._id,
+    type: getActivityType(session.sessionType),
+    title: getActivityTitle(session),
+    score: session.results?.score,
+    xpEarned: calculateXPEarned(session),
+    timestamp: formatTimestamp(session.completedAt || session.createdAt),
+    difficulty: session.results?.difficulty || 'medium'
+  }));
+  setRecentActivity(formattedActivity);
+}
         
         // Generate dynamic data
         await Promise.all([
@@ -621,7 +627,7 @@ const Dashboard = () => {
         {/* Header with Daily Quote */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2 text-center ">
-            Welcome back, {user?.username || 'Student'}!
+            Welcome back, {user?.name || "Student"}!
           </h1>
           
           {/* Daily Motivational Quote */}
@@ -633,6 +639,45 @@ const Dashboard = () => {
                 <p className="text-white text-sm italic leading-relaxed">"{dailyQuote}"</p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Quick Actions - Moved to top */}
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link
+              href={"/generate-sheet"}
+              className="block w-full flex items-center justify-between p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl hover:bg-blue-500/20 transition-colors text-left"
+            >
+              <div className="flex items-center space-x-3">
+                <Plus className="w-6 h-6 text-blue-400" />
+                <span className="text-white font-medium">Create New Sheet</span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-400" />
+            </Link>
+
+            <Link
+              href={"/sheets"}
+              className="block w-full flex items-center justify-between p-4 bg-green-500/10 border border-green-500/20 rounded-xl hover:bg-green-500/20 transition-colors text-left"
+            >
+              <div className="flex items-center space-x-3">
+                <Target className="w-6 h-6 text-green-400" />
+                <span className="text-white font-medium">Take a Quiz</span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-400" />
+            </Link>
+
+            <Link
+              href={"/chatbot"}
+              className="block w-full flex items-center justify-between p-4 bg-purple-500/10 border border-purple-500/20 rounded-xl hover:bg-purple-500/20 transition-colors text-left"
+            >
+              <div className="flex items-center space-x-3">
+                <Brain className="w-6 h-6 text-purple-400" />
+                <span className="text-white font-medium">AI Study Chat</span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-400" />
+            </Link>
           </div>
         </div>
 
@@ -867,42 +912,6 @@ const Dashboard = () => {
                 )}
                 
               </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="space-y-3">
-              <Link
-                href={"/generate-sheet"}
-                className="block w-full flex items-center justify-between p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl hover:bg-blue-500/20 transition-colors text-left"
-              >
-                <div className="flex items-center space-x-3">
-                  <Plus className="w-5 h-5 text-blue-400" />
-                  <span className="text-white">Create New Sheet</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              </Link>
-
-              <Link
-                href={"/sheets"}
-                className="block w-full flex items-center justify-between p-3 bg-green-500/10 border border-green-500/20 rounded-xl hover:bg-green-500/20 transition-colors text-left"
-              >
-                <div className="flex items-center space-x-3">
-                  <Target className="w-5 h-5 text-green-400" />
-                  <span className="text-white">Take a Quiz</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              </Link>
-
-              <Link
-                href={"/chatbot"}
-                className="block w-full flex items-center justify-between p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl hover:bg-purple-500/20 transition-colors text-left"
-              >
-                <div className="flex items-center space-x-3">
-                  <Brain className="w-5 h-5 text-purple-400" />
-                  <span className="text-white">AI Study Chat</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              </Link>
             </div>
 
           </div>

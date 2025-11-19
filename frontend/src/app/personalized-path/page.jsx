@@ -175,6 +175,9 @@ const AssessmentFlow = () => {
     setPersonalizedPath(null);
     setError(null);
   };
+  const handlePaths=()=>{
+    router.push("/paths");
+  }
 
   const startActivity = (pathId, phaseNumber, activityIndex) => {
     // TODO: Implement activity start logic here
@@ -452,165 +455,231 @@ const AssessmentFlow = () => {
         </div>
       )}
 
-      {stage === 'path' && personalizedPath && (
-        <div>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-[#53B4EE] to-[#8961FF] bg-clip-text text-transparent">{personalizedPath.pathTitle}</h2>
-            <p className="text-slate-300 text-lg mb-2">{personalizedPath.overview}</p>
-            <p className="text-sm text-slate-400">Estimated Duration: {personalizedPath.estimatedDuration}</p>
-          </div>
 
-          <div className="space-y-6">
-            {personalizedPath.phases?.map((phase, index) => (
-              <div key={phase.phaseNumber} 
-                   className={`border rounded-xl p-6 backdrop-blur-sm ${
-                     phase.focus === 'weakness' ? 'border-orange-500/30 bg-orange-500/20' :
-                     phase.focus === 'strength' ? 'border-green-500/30 bg-green-500/20' :
-                     'border-[#8961FF]/30 bg-[#8961FF]/20'
-                   }`}>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-semibold flex items-center text-white">
-                    <span className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 ${
-                      phase.focus === 'weakness' ? 'bg-gradient-to-r from-orange-500 to-red-500' :
-                      phase.focus === 'strength' ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
-                      'bg-gradient-to-r from-[#8961FF] to-[#53B4EE]'
-                    }`}>
-                      {phase.phaseNumber}
-                    </span>
-                    {phase.title}
-                  </h3>
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    phase.focus === 'weakness' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' :
-                    phase.focus === 'strength' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                    'bg-[#8961FF]/20 text-[#8961FF] border border-[#8961FF]/30'
-                  }`}>
-                    {phase.focus === 'weakness' ? '🎯 Focus Area' : 
-                     phase.focus === 'strength' ? '💪 Strength' : '🔄 Mixed'}
-                  </span>
-                </div>
+{stage === 'path' && personalizedPath && (
+  <div>
+    <div className="text-center mb-8">
+      <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-[#00D4FF] via-[#8961FF] to-[#FF6B9D] bg-clip-text text-transparent animate-pulse">
+        {personalizedPath.pathTitle}
+      </h2>
+      <p className="text-slate-200 text-lg mb-2 font-medium">{personalizedPath.overview}</p>
+      <p className="text-sm text-[#00D4FF] font-semibold">⚡ Estimated Duration: {personalizedPath.estimatedDuration}</p>
+    </div>
 
-                <p className="text-sm text-slate-400 mb-4">⏱️ {phase.estimatedTime}</p>
+    <div className="space-y-8">
+      {personalizedPath.phases?.map((phase, index) => (
+        <div key={phase.phaseNumber} 
+             className={`relative overflow-hidden border-2 rounded-2xl p-8 backdrop-blur-lg shadow-2xl transform hover:scale-[1.02] transition-all duration-500 ${
+               phase.focus === 'weakness' 
+                 ? 'border-[#FF6B9D] bg-gradient-to-br from-[#FF6B9D]/20 via-[#FF8A80]/10 to-[#FF6B9D]/5 shadow-[#FF6B9D]/20' :
+               phase.focus === 'strength' 
+                 ? 'border-[#00FF88] bg-gradient-to-br from-[#00FF88]/20 via-[#64FFDA]/10 to-[#00FF88]/5 shadow-[#00FF88]/20' :
+                 'border-[#00D4FF] bg-gradient-to-br from-[#00D4FF]/20 via-[#8961FF]/10 to-[#00D4FF]/5 shadow-[#00D4FF]/20'
+             }`}>
+          
+          {/* Animated background gradient */}
+          <div className={`absolute inset-0 opacity-10 ${
+            phase.focus === 'weakness' 
+              ? 'bg-gradient-to-r from-[#FF6B9D] via-transparent to-[#FF8A80]' :
+            phase.focus === 'strength' 
+              ? 'bg-gradient-to-r from-[#00FF88] via-transparent to-[#64FFDA]' :
+              'bg-gradient-to-r from-[#00D4FF] via-transparent to-[#8961FF]'
+          } animate-pulse`}></div>
 
-                <div className="space-y-3">
-                  {phase.activities?.map((activity, actIndex) => (
-                    <div key={actIndex} className="bg-[#160C3C]/40 rounded-xl p-4 shadow-sm border border-slate-700/50 backdrop-blur-sm">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-semibold text-white">{activity.title}</h4>
-                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                          activity.difficulty === 'easy' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                          activity.difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
-                          'bg-red-500/20 text-red-400 border border-red-500/30'
-                        }`}>
-                          {activity.difficulty}
-                        </span>
-                      </div>
-                      <p className="text-slate-400 text-sm mb-2">{activity.description}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <span className={`px-2 py-1 rounded text-xs border ${
-                            activity.type === 'reading' ? 'bg-[#53B4EE]/20 text-[#53B4EE] border-[#53B4EE]/30' :
-                            activity.type === 'practice' ? 'bg-[#8961FF]/20 text-[#8961FF] border-[#8961FF]/30' :
-                            activity.type === 'video' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
-                            'bg-slate-700/50 text-slate-400 border-slate-600/50'
-                          }`}>
-                            📚 {activity.type}
-                          </span>
-                          <span className="text-xs text-slate-500">⏱️ {activity.estimatedTime}</span>
-                        </div>
-                     {activity.type === "practice" ? (
-          <Link href="/sheets" className="bg-[#8961FF]/20 text-[#8961FF] px-3 py-1 rounded text-sm hover:shadow-lg hover:shadow-[#8961FF]/25 transition-all duration-300">
-            Generate a Quiz here
-          </Link>
-        ) : (
-          <a
-            href={activity.resourceLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gradient-to-r from-[#53B4EE] to-[#57AFF0] text-white px-3 py-1 rounded text-sm hover:shadow-lg hover:shadow-[#53B4EE]/25 transition-all duration-300 inline-flex items-center"
-          >
-            <Play className="w-3 h-3 mr-1" />
-            {activity.title}
-          </a>)}
-
-                      </div>
-                      {activity.concepts && activity.concepts.length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {activity.concepts.map((concept, cIndex) => (
-                            <span key={cIndex} className="bg-slate-700/50 text-slate-300 px-2 py-1 rounded-full text-xs border border-slate-600/50">
-                              {concept}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {personalizedPath.milestones?.find(m => m.after_phase === phase.phaseNumber) && (
-                  <div className="mt-4 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-xl backdrop-blur-sm">
-                    <div className="flex items-center">
-                      <span className="text-yellow-400 mr-2">🏆</span>
-                      <div>
-                        <p className="font-semibold text-yellow-400">
-                          Milestone: {personalizedPath.milestones.find(m => m.after_phase === phase.phaseNumber)?.title}
-                        </p>
-                        <p className="text-sm text-yellow-300">
-                          {personalizedPath.milestones.find(m => m.after_phase === phase.phaseNumber)?.criteria}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 bg-gradient-to-r from-[#8961FF]/20 to-[#53B4EE]/20 rounded-xl p-6 border border-[#8961FF]/30 backdrop-blur-sm">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-              📊 Path Summary
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-              <div>
-                <div className="text-2xl font-bold text-[#8961FF]">
-                  {personalizedPath.phases?.length || 0}
-                </div>
-                <div className="text-sm text-slate-400">Phases</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-[#53B4EE]">
-                  {personalizedPath.phases?.reduce((total, phase) => total + (phase.activities?.length || 0), 0) || 0}
-                </div>
-                <div className="text-sm text-slate-400">Activities</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-green-400">
-                  {personalizedPath.milestones?.length || 0}
-                </div>
-                <div className="text-sm text-slate-400">Milestones</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-[#57AFF0]">
-                  {personalizedPath.estimatedDuration}
-                </div>
-                <div className="text-sm text-slate-400">Duration</div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold flex items-center text-white">
+                <span className={`w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg font-black mr-4 shadow-xl transform hover:rotate-12 transition-transform duration-300 ${
+                  phase.focus === 'weakness' 
+                    ? 'bg-gradient-to-br from-[#FF6B9D] to-[#FF8A80] shadow-[#FF6B9D]/50' :
+                  phase.focus === 'strength' 
+                    ? 'bg-gradient-to-br from-[#00FF88] to-[#64FFDA] shadow-[#00FF88]/50 text-black' :
+                    'bg-gradient-to-br from-[#00D4FF] to-[#8961FF] shadow-[#00D4FF]/50'
+                }`}>
+                  {phase.phaseNumber}
+                </span>
+                {phase.title}
+              </h3>
+              
+              <div className="flex items-center space-x-3">
+                <span className={`px-4 py-2 rounded-full text-sm font-bold shadow-lg ${
+                  phase.focus === 'weakness' 
+                    ? 'bg-gradient-to-r from-[#FF6B9D] to-[#FF8A80] text-white shadow-[#FF6B9D]/30' :
+                  phase.focus === 'strength' 
+                    ? 'bg-gradient-to-r from-[#00FF88] to-[#64FFDA] text-black shadow-[#00FF88]/30' :
+                    'bg-gradient-to-r from-[#00D4FF] to-[#8961FF] text-white shadow-[#00D4FF]/30'
+                }`}>
+                  {phase.focus === 'weakness' ? '🎯 Priority Focus' : 
+                   phase.focus === 'strength' ? '💎 Build Mastery' : '🚀 Core Learning'}
+                </span>
               </div>
             </div>
-          </div>
 
-          <div className="mt-8 text-center space-x-4">
-            <button onClick={resetAssessment}
-                    className="bg-slate-700/50 text-white px-6 py-2 rounded-xl hover:bg-slate-600/50 transition-all duration-300 backdrop-blur-sm">
-              Take Another Assessment
-            </button>
-            <button 
-              onClick={loadExistingPaths}
-              className="bg-gradient-to-r from-[#57AFF0] to-[#53B4EE] text-white px-6 py-2 rounded-xl hover:shadow-lg hover:shadow-[#57AFF0]/25 transition-all duration-300"
-            >
-              View All My Paths
-            </button>
+            <p className="text-sm text-[#00D4FF] mb-6 font-semibold flex items-center">
+              <span className="w-2 h-2 bg-[#00D4FF] rounded-full mr-2 animate-pulse"></span>
+              ⏱️ {phase.estimatedTime}
+            </p>
+
+            <div className="space-y-4">
+              {phase.activities?.map((activity, actIndex) => (
+                <div key={actIndex} className={`bg-gradient-to-r p-6 rounded-xl shadow-xl border-2 backdrop-blur-sm transform hover:scale-[1.01] transition-all duration-300 ${
+                  activity.difficulty === 'easy' 
+                    ? 'from-[#00FF88]/20 to-[#64FFDA]/10 border-[#00FF88]/30 hover:shadow-[#00FF88]/20' :
+                  activity.difficulty === 'medium' 
+                    ? 'from-[#FFD700]/20 to-[#FFA500]/10 border-[#FFD700]/30 hover:shadow-[#FFD700]/20' :
+                    'from-[#FF6B9D]/20 to-[#FF8A80]/10 border-[#FF6B9D]/30 hover:shadow-[#FF6B9D]/20'
+                }`}>
+                  
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-bold text-lg text-white flex items-center">
+                      <span className={`w-3 h-3 rounded-full mr-3 ${
+                        activity.difficulty === 'easy' ? 'bg-[#00FF88] shadow-lg shadow-[#00FF88]/50' :
+                        activity.difficulty === 'medium' ? 'bg-[#FFD700] shadow-lg shadow-[#FFD700]/50' :
+                        'bg-[#FF6B9D] shadow-lg shadow-[#FF6B9D]/50'
+                      }`}></span>
+                      {activity.title}
+                    </h4>
+                    
+                    <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-lg ${
+                      activity.difficulty === 'easy' 
+                        ? 'bg-gradient-to-r from-[#00FF88] to-[#64FFDA] text-black shadow-[#00FF88]/30' :
+                      activity.difficulty === 'medium' 
+                        ? 'bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-black shadow-[#FFD700]/30' :
+                        'bg-gradient-to-r from-[#FF6B9D] to-[#FF8A80] text-white shadow-[#FF6B9D]/30'
+                    }`}>
+                      {activity.difficulty}
+                    </span>
+                  </div>
+                  
+                  <p className="text-slate-200 text-sm mb-4 leading-relaxed">{activity.description}</p>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <span className={`px-3 py-1 rounded-lg text-xs font-bold border-2 ${
+                        activity.type === 'reading' 
+                          ? 'bg-gradient-to-r from-[#00D4FF]/30 to-[#8961FF]/20 text-[#00D4FF] border-[#00D4FF]/50' :
+                        activity.type === 'practice' 
+                          ? 'bg-gradient-to-r from-[#8961FF]/30 to-[#FF6B9D]/20 text-[#8961FF] border-[#8961FF]/50' :
+                        activity.type === 'video' 
+                          ? 'bg-gradient-to-r from-[#00FF88]/30 to-[#64FFDA]/20 text-[#00FF88] border-[#00FF88]/50' :
+                          'bg-gradient-to-r from-slate-600/30 to-slate-500/20 text-slate-300 border-slate-500/50'
+                      }`}>
+                        {activity.type === 'reading' ? '📚' : 
+                         activity.type === 'practice' ? '🎯' : 
+                         activity.type === 'video' ? '🎬' : '📝'} {activity.type.toUpperCase()}
+                      </span>
+                      
+                      <span className="text-xs text-[#00D4FF] font-semibold flex items-center">
+                        <span className="w-1.5 h-1.5 bg-[#00D4FF] rounded-full mr-1 animate-pulse"></span>
+                        ⏱️ {activity.estimatedTime}
+                      </span>
+                    </div>
+                    
+                    {activity.type === "practice" ? (
+                      <Link href="/sheets" className="bg-gradient-to-r from-[#8961FF] to-[#FF6B9D] text-white px-4 py-2 rounded-xl font-bold shadow-lg hover:shadow-xl hover:shadow-[#8961FF]/30 transition-all duration-300 transform hover:scale-105">
+                        🎯 Generate Quiz
+                      </Link>
+                    ) : (
+                      <a
+                        href={activity.resourceLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-gradient-to-r from-[#00D4FF] to-[#8961FF] text-white px-4 py-2 rounded-xl font-bold shadow-lg hover:shadow-xl hover:shadow-[#00D4FF]/30 transition-all duration-300 transform hover:scale-105 inline-flex items-center"
+                      >
+                        <Play className="w-4 h-4 mr-2" />
+                        🚀 Start
+                      </a>
+                    )}
+                  </div>
+                  
+                  {activity.concepts && activity.concepts.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {activity.concepts.map((concept, cIndex) => (
+                        <span key={cIndex} className="bg-gradient-to-r from-slate-700/80 to-slate-600/60 text-[#00D4FF] px-3 py-1 rounded-full text-xs font-semibold border border-[#00D4FF]/30 shadow-sm">
+                          {concept}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {personalizedPath.milestones?.find(m => m.after_phase === phase.phaseNumber) && (
+              <div className="mt-6 p-4 bg-gradient-to-r from-[#FFD700]/30 to-[#FFA500]/20 border-2 border-[#FFD700]/50 rounded-xl backdrop-blur-sm shadow-xl shadow-[#FFD700]/20">
+                <div className="flex items-center">
+                  <span className="text-3xl mr-3 animate-bounce">🏆</span>
+                  <div>
+                    <p className="font-bold text-[#FFD700] text-lg">
+                      🎉 Milestone Achievement
+                    </p>
+                    <p className="font-semibold text-white">
+                      {personalizedPath.milestones.find(m => m.after_phase === phase.phaseNumber)?.title}
+                    </p>
+                    <p className="text-sm text-[#FFD700]/80">
+                      {personalizedPath.milestones.find(m => m.after_phase === phase.phaseNumber)?.criteria}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      )}
+      ))}
+    </div>
+
+    <div className="mt-12 bg-gradient-to-r from-[#160C3C]/60 via-[#8961FF]/20 to-[#00D4FF]/20 rounded-2xl p-8 border-2 border-[#8961FF]/30 backdrop-blur-lg shadow-2xl shadow-[#8961FF]/20">
+      <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
+        <span className="text-3xl mr-3">📊</span>
+        <span className="bg-gradient-to-r from-[#00D4FF] to-[#8961FF] bg-clip-text text-transparent">
+          Learning Path Overview
+        </span>
+      </h3>
+      
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div className="bg-gradient-to-br from-[#8961FF]/20 to-[#8961FF]/10 rounded-xl p-4 border border-[#8961FF]/30">
+          <div className="text-4xl font-black text-[#8961FF] mb-2">
+            {personalizedPath.phases?.length || 0}
+          </div>
+          <div className="text-sm font-semibold text-[#8961FF]">Learning Phases</div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-[#00D4FF]/20 to-[#00D4FF]/10 rounded-xl p-4 border border-[#00D4FF]/30">
+          <div className="text-4xl font-black text-[#00D4FF] mb-2">
+            {personalizedPath.phases?.reduce((total, phase) => total + (phase.activities?.length || 0), 0) || 0}
+          </div>
+          <div className="text-sm font-semibold text-[#00D4FF]">Total Activities</div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-[#00FF88]/20 to-[#00FF88]/10 rounded-xl p-4 border border-[#00FF88]/30">
+          <div className="text-4xl font-black text-[#00FF88] mb-2">
+            {personalizedPath.milestones?.length || 0}
+          </div>
+          <div className="text-sm font-semibold text-[#00FF88]">Milestones</div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-[#FF6B9D]/20 to-[#FF6B9D]/10 rounded-xl p-4 border border-[#FF6B9D]/30">
+          <div className="text-4xl font-black text-[#FF6B9D] mb-2">
+            {personalizedPath.estimatedDuration}
+          </div>
+          <div className="text-sm font-semibold text-[#FF6B9D]">Total Duration</div>
+        </div>
+      </div>
+    </div>
+
+    <div className="mt-8 text-center space-x-4">
+      <button onClick={resetAssessment}
+              className="bg-gradient-to-r from-slate-700 to-slate-600 text-white px-8 py-3 rounded-xl hover:from-slate-600 hover:to-slate-500 transition-all duration-300 backdrop-blur-sm font-semibold shadow-lg">
+        🔄 New Assessment
+      </button>
+      <button onClick={handlePaths} 
+        className="bg-gradient-to-r from-[#00D4FF] via-[#8961FF] to-[#FF6B9D] text-white px-8 py-3 rounded-xl hover:shadow-xl hover:shadow-[#8961FF]/30 transition-all duration-300 font-semibold transform hover:scale-105"
+      >
+        🎯 View All Paths
+      </button>
+    </div>
+  </div>
+)}
 
       {stage === 'existingPaths' && (
         <div>

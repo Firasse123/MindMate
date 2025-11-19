@@ -13,5 +13,5 @@ export const transporter = nodemailer.createTransport({
 
 export const sender = {
   email: process.env.GMAIL_USER,
-  name: "Your App Name",
+  name: "MindMate",
 };

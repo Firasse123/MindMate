@@ -5,7 +5,6 @@ import {
   ChevronRight,
   ChevronLeft
 } from 'lucide-react';
-import { submitQuiz } from '@/store/quizStore';
 import QuizResults from './QuizResults';
 
 // Floating Shape Component
@@ -32,13 +31,6 @@ const QuizDisplay = ({ quiz, onComplete }) => {
       setQuestions([...quiz.questions]);
     }
   }, [quiz]);
-
- 
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
 
   const handleAnswerSelect = (answer) => {
     setUserAnswers(prev => {
@@ -74,52 +66,24 @@ const QuizDisplay = ({ quiz, onComplete }) => {
     return { totalScore, maxScore, percentage: Math.round((totalScore / maxScore) * 100) };
   };
 
+  // FIXED: Only calculate score and pass data to parent - NO API CALL HERE
   const handleSubmitQuiz = async () => {
     const scoreData = calculateScore();
     setQuizCompleted(true);
     console.log("Quiz completed!", { scoreData, userAnswers });
     
-    try {
-      const detailedAnswers = userAnswers.map((answer, index) => ({
-        questionIndex: index,
-        userAnswer: answer,
-        correctAnswer: quiz.questions[index].correctAnswer,
-        isCorrect: answer === quiz.questions[index].correctAnswer,
-        timeSpent: 1000, 
-        questionText: quiz.questions[index].question
-      }));
-      
-      // FIX: Send correct data structure to match backend expectations
-      const result = await submitQuiz(
-        quiz._id,           // quizId
-        detailedAnswers,    // answers
-        0,                  // totalTimeSpent
-        scoreData           // scoreData (for frontend use)
-      );
-      
-      console.log('Quiz results saved:', result.data);
-
-      // FIX: Properly handle XP results and show user feedback
-      if (result?.data) {
-        const { xpEarned, leveledUp, newLevel, oldLevel, score } = result.data;
-        
-        // Show success message with XP info
-        
-        
-        console.log(`You earned ${xpEarned} XP!`);
-        if (leveledUp) {
-          console.log(`Level up! You're now level ${newLevel} (was ${oldLevel})!`);
-        }
-        
-        // Optional: Update user store or trigger refresh of user data
-        // checkAuth(); // Refresh user data if you store XP in user object
-      }
-    } catch (error) {
-      console.error("Error submitting quiz:", error);
-      alert("Failed to submit quiz results. Please try again.");
-    }
-
-    onComplete && onComplete(scoreData, userAnswers);
+    // Create detailed answers for parent component
+    const detailedAnswers = userAnswers.map((answer, index) => ({
+      questionIndex: index,
+      userAnswer: answer,
+      correctAnswer: quiz.questions[index].correctAnswer,
+      isCorrect: answer === quiz.questions[index].correctAnswer,
+      timeSpent: 1000, 
+      questionText: quiz.questions[index].question
+    }));
+    
+    // ONLY pass data to parent - parent handles API submission
+    onComplete && onComplete(scoreData, userAnswers, detailedAnswers);
   };
 
   const handleRestartQuiz = () => {

@@ -42,7 +42,8 @@ const SheetCard = ({ sheet }) => {
     <div className="group relative transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02]">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-purple-600/10 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
       <div
-        className="relative p-6 rounded-xl backdrop-filter backdrop-blur-lg border border-opacity-30 shadow-2xl transition-all duration-300"
+  className="relative p-6 rounded-xl backdrop-filter backdrop-blur-lg border border-opacity-30 shadow-2xl transition-all duration-300 flex flex-col min-h-[420px] h-full"
+
         style={{ backgroundColor: "rgba(15, 23, 42, 0.8)", borderColor: "#53B4EE" }}
       >
         {/* Header */}

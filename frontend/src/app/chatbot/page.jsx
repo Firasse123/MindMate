@@ -191,10 +191,6 @@ const Chatbot = () => {
               {/* Chat Stats */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-400">Messages</span>
-                  <span className="text-white">{chats.length}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
                   <span className="text-slate-400">Status</span>
                   <span className="text-green-400">Online</span>
                 </div>

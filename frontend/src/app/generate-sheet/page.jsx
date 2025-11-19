@@ -90,17 +90,7 @@ const TipTapEditor = ({
         >
           <em>I</em>
         </button>
-        <button
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          disabled={disabled}
-          className={`px-3 py-2 rounded text-sm ${
-            editor.isActive('bulletList') 
-              ? 'bg-blue-500 text-white' 
-              : 'text-slate-300 hover:bg-slate-700'
-          } disabled:opacity-50 disabled:cursor-not-allowed`}
-        >
-          • List
-        </button>
+      
 
         <button
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}

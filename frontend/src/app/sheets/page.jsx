@@ -10,7 +10,6 @@ import {
   Loader2,
   Plus
 } from "lucide-react";
-import axios from "axios";
 import SheetCard from "..//../components/sheets/SheetCard";
 import Navbar from "..//../components/Navbar"
 import { useAuthStore } from "../../store/authStore";
